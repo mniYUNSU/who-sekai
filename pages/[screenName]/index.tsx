@@ -1,11 +1,26 @@
-import { Avatar, Box, Button, Flex, FormControl, FormLabel, Switch, Text, Textarea, useToast } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Switch,
+  Text,
+  Textarea,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
+import { TriangleDownIcon } from '@chakra-ui/icons';
 import { GetServerSideProps, NextPage } from 'next';
 import ResizeTextarea from 'react-textarea-autosize';
-import { useState } from 'react';
+import { isValidElement, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { ServiceLayout } from '@/components/service_layout';
 import { useAuth } from '@/contexts/auth_user.context';
 import { InAuthUser } from '@/models/in_auth_user';
+import MessageItem from '@/components/message_item';
+import { InMessage } from '@/models/message/in_message';
 
 interface Props {
   userInfo: InAuthUser | null;
@@ -56,15 +71,65 @@ async function postMessage({
 const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [messageList, setMessageList] = useState<InMessage[]>([]);
+  const [messageListFetchTrigger, setMessageListFetchTrigger] = useState(false);
   const toast = useToast();
   const { authUser } = useAuth();
+
+  async function fetchMessageList(uid: string) {
+    try {
+      const resp = await fetch(`/api/messages.list?uid=${uid}&page=${page}&size=10`);
+      if (resp.status === 200) {
+        const data: { totalElements: number; totalPages: number; page: number; size: number; content: InMessage[] } =
+          await resp.json();
+        setTotalPages(data.totalPages);
+        setMessageList((prev) => [...prev, ...data.content]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function fetchMessageInfo({ uid, messageId }: { uid: string; messageId: string }) {
+    try {
+      const resp = await fetch(`/api/messages.info?uid=${uid}&messageId=${messageId}`);
+      if (resp.status === 200) {
+        const data: InMessage = await resp.json();
+        setMessageList((prev) => {
+          const findIndex = prev.findIndex((fv) => fv.id === data.id);
+          if (findIndex >= 0) {
+            const updateArr = [...prev];
+            updateArr[findIndex] = data;
+            return updateArr;
+          }
+          return prev;
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if (userInfo === null) return;
+    fetchMessageList(userInfo.uid);
+  }, [userInfo, messageListFetchTrigger, page]);
 
   if (userInfo === null) {
     return <p>사용자를 찾을 수 없습니다.</p>;
   }
 
+  const isOwner = authUser !== null && authUser.uid === userInfo.uid;
+
   return (
-    <ServiceLayout title={`${userInfo.displayName}의 메모장 | YunsuBlah`} minH="100vh" backgroundColor="gray.50">
+    <ServiceLayout
+      title={`${userInfo.displayName}의 세계 | WHO-SEKAI `}
+      minH="100vh"
+      backgroundColor="gray.50"
+      pb="100"
+    >
       <Box maxW="md" mx="auto" pt="6">
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg="white">
           <Flex p="6">
@@ -86,7 +151,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
             <Textarea
               bg="gray.100"
               border="none"
-              placeholder="무엇이 궁금한가요?"
+              placeholder={`${userInfo.displayName}의 세계에 어떤 이야기를 남길까요?`}
               resize="none"
               minH="unset"
               overflow="hidden"
@@ -133,6 +198,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
                   toast({ title: '메시지 등록 실패', position: 'top-right' });
                 }
                 setMessage('');
+                setMessageListFetchTrigger((prev) => !prev);
               }}
             >
               등록
@@ -158,6 +224,34 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
             </FormLabel>
           </FormControl>
         </Box>
+        <VStack spacing="12px" mt="6">
+          {messageList.map((messageData) => (
+            <MessageItem
+              key={`message-item-${userInfo.uid}-${messageData.id}`}
+              item={messageData}
+              uid={userInfo.uid}
+              displayName={userInfo.displayName ?? ''}
+              photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
+              isOwner={isOwner}
+              onSendComplete={() => {
+                fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
+              }}
+            />
+          ))}
+        </VStack>
+        {totalPages > page && (
+          <Button
+            width="full"
+            mt="2"
+            fontSize="sm"
+            leftIcon={<TriangleDownIcon />}
+            onClick={() => {
+              setPage((p) => p + 1);
+            }}
+          >
+            더보기
+          </Button>
+        )}
       </Box>
     </ServiceLayout>
   );

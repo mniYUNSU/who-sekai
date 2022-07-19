@@ -8,7 +8,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const ServiceLayout: React.FC<Props & BoxProps> = function ({ title = 'YunsuBlah', children, ...boxProps }) {
+export const ServiceLayout: React.FC<Props & BoxProps> = function ({ title = 'WHOSEKAI', children, ...boxProps }) {
   return (
     <Box {...boxProps}>
       <Head>

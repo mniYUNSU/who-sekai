@@ -9,11 +9,11 @@ const IndexPage: NextPage = function () {
   console.info(authUser);
 
   return (
-    <ServiceLayout title="test" backgroundColor="gray.50" minH="100vh">
+    <ServiceLayout title="누군가의 세계 | WHO-SEKAI" backgroundColor="gray.50" minH="100vh">
       <Box maxW="md" mx="auto" pt={10}>
         <img src="/main_logo.svg" alt="main logo" />
         <Flex justify="center">
-          <Heading>#YunsuBlah</Heading>
+          <Heading>누군가의 세계 | WHO-SEKAI</Heading>
         </Flex>
       </Box>
       <Center mt="20">

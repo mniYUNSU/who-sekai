@@ -34,8 +34,8 @@ const GNB = function () {
         </Box>
         <Spacer />
         <Box>
-          <Text fontSize="lg" fontWeight={600}>
-            #YunsuBlah
+          <Text fontSize="lg" fontWeight={800}>
+            WHO-SEKAI
           </Text>
         </Box>
         <Spacer />
