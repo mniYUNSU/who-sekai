@@ -24,6 +24,7 @@ import { InMessage } from '@/models/message/in_message';
 
 interface Props {
   userInfo: InAuthUser | null;
+  screenName: string;
 }
 
 async function postMessage({
@@ -68,7 +69,7 @@ async function postMessage({
   }
 }
 
-const UserHomePage: NextPage<Props> = function ({ userInfo }) {
+const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [page, setPage] = useState(1);
@@ -85,6 +86,10 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
         const data: { totalElements: number; totalPages: number; page: number; size: number; content: InMessage[] } =
           await resp.json();
         setTotalPages(data.totalPages);
+        if (page === 1) {
+          setMessageList([...data.content]);
+          return;
+        }
         setMessageList((prev) => [...prev, ...data.content]);
       }
     } catch (error) {
@@ -198,7 +203,10 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
                   toast({ title: '메시지 등록 실패', position: 'top-right' });
                 }
                 setMessage('');
-                setMessageListFetchTrigger((prev) => !prev);
+                setPage(1);
+                setTimeout(() => {
+                  setMessageListFetchTrigger((prev) => !prev);
+                }, 50);
               }}
             >
               등록
@@ -230,6 +238,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
               key={`message-item-${userInfo.uid}-${messageData.id}`}
               item={messageData}
               uid={userInfo.uid}
+              screenName={screenName}
               displayName={userInfo.displayName ?? ''}
               photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
               isOwner={isOwner}
@@ -264,9 +273,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: null,
+        screenName: '',
       },
     };
   }
+  const screenNameToStr = Array.isArray(screenName) ? screenName[0] : screenName;
 
   try {
     const protocol = process.env.PROTOCOL || 'http';
@@ -279,6 +290,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: userInfoResp.data ?? null,
+        screenName: screenNameToStr,
       },
     };
   } catch (error) {
@@ -286,6 +298,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: null,
+        screenName: '',
       },
     };
   }
