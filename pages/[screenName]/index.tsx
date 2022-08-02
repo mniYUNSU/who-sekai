@@ -14,7 +14,7 @@ import {
 import { TriangleDownIcon } from '@chakra-ui/icons';
 import { GetServerSideProps, NextPage } from 'next';
 import ResizeTextarea from 'react-textarea-autosize';
-import { isValidElement, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { ServiceLayout } from '@/components/service_layout';
 import { useAuth } from '@/contexts/auth_user.context';
