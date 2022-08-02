@@ -1,4 +1,16 @@
-import { Spacer, Box, Flex, Button, Text } from '@chakra-ui/react';
+import {
+  Spacer,
+  Box,
+  Flex,
+  Button,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
+  Avatar,
+} from '@chakra-ui/react';
 import { useAuth } from '@/contexts/auth_user.context';
 
 const GNB = function () {
@@ -18,9 +30,23 @@ const GNB = function () {
   );
 
   const logOutBtn = (
-    <Button as="a" fontWeight={400} variant="link" onClick={signOut} _hover={{ cursor: 'pointer' }}>
-      로그아웃
-    </Button>
+    <Menu>
+      <MenuButton
+        as={IconButton}
+        icon={<Avatar size="md" src={authUser?.photoURL ?? 'https://bit.ly/broken-link'} />}
+        borderRadius="full"
+      />
+      <MenuList>
+        <MenuItem
+          onClick={() => {
+            window.location.href = `/${authUser?.email?.replace('@gmail.com', '')}`;
+          }}
+        >
+          사용자 홈으로 이동
+        </MenuItem>
+        <MenuItem onClick={signOut}>로그아웃</MenuItem>
+      </MenuList>
+    </Menu>
   );
 
   const authInitialized = loading || authUser === null;
