@@ -8,6 +8,7 @@ import {
   Switch,
   Text,
   Textarea,
+  useColorModeValue,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -21,6 +22,7 @@ import { useAuth } from '@/contexts/auth_user.context';
 import { InAuthUser } from '@/models/in_auth_user';
 import MessageItem from '@/components/message_item';
 import { InMessage } from '@/models/message/in_message';
+import makeAnonymousName from '@/hooks/makeAnonymousName';
 
 interface Props {
   userInfo: InAuthUser | null;
@@ -79,6 +81,11 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
   const toast = useToast();
   const { authUser } = useAuth();
 
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const messageBoxColor = useColorModeValue('white', '#393649');
+  const messageBoxInputColor = useColorModeValue('gray.100', 'gray.900');
+  const submitButtonColor = useColorModeValue('blue.900', 'teal.400');
+
   async function fetchMessageList(uid: string) {
     try {
       const resp = await fetch(`/api/messages.list?uid=${uid}&page=${page}&size=10`);
@@ -132,11 +139,11 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
     <ServiceLayout
       title={`${userInfo.displayName}의 세계 | WHO-SEKAI `}
       minH="100vh"
-      backgroundColor="gray.50"
+      backgroundColor={bgColor}
       pb="100"
     >
       <Box maxW="md" mx="auto" pt="6">
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg="white">
+        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
           <Flex p="6">
             <Avatar size="lg" src={userInfo.photoURL ?? 'https://bit.ly/broken-link'} mr="2" />
             <Flex direction="column" justify="center">
@@ -145,7 +152,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
             </Flex>
           </Flex>
         </Box>
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg="white">
+        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
           <Flex align="center" p="2">
             <Avatar
               size="xs"
@@ -154,7 +161,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
               bg="teal.500"
             />
             <Textarea
-              bg="gray.100"
+              bg={messageBoxInputColor}
               border="none"
               placeholder={`${userInfo.displayName}의 세계에 어떤 이야기를 남길까요?`}
               resize="none"
@@ -182,7 +189,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
             />
             <Button
               color="white"
-              bgColor="blue.900"
+              bgColor={submitButtonColor}
               colorScheme="blue"
               variant="solid"
               size="sm"
@@ -194,7 +201,14 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
                 if (isAnonymous === false) {
                   postData.author = {
                     photoURL: authUser?.photoURL ?? 'https://bit.ly/broken-link',
-                    displayName: authUser?.displayName ?? 'anonymous',
+                    displayName: authUser?.displayName ?? makeAnonymousName(),
+                  };
+                } else {
+                  postData.author = {
+                    photoURL: `https://xsgames.co/randomusers/assets/avatars/pixel/${
+                      Math.floor(Math.random() * 30) + 1
+                    }.jpg`,
+                    displayName: makeAnonymousName(),
                   };
                 }
 
@@ -228,7 +242,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
               }}
             />
             <FormLabel htmlFor="anonymous" mb="0" fontSize="xx-small">
-              Anonymous
+              익명으로 남기기
             </FormLabel>
           </FormControl>
         </Box>

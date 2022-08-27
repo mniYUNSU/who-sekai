@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
@@ -21,6 +21,9 @@ interface Props {
 const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgData, screenName, baseUrl }) {
   const [messageData, setMessageData] = useState<null | InMessage>(initMsgData);
   const { authUser } = useAuth();
+
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const messageBoxColor = useColorModeValue('white', '#393649');
 
   async function fetchMessageInfo({ uid, messageId }: { uid: string; messageId: string }) {
     try {
@@ -58,7 +61,7 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
       <ServiceLayout
         title={`${userInfo.displayName}의 세계 | WHO-SEKAI `}
         minH="100vh"
-        backgroundColor="gray.50"
+        backgroundColor={bgColor}
         pb="100"
       >
         <Box maxW="md" mx="auto" pt="6">
@@ -69,7 +72,7 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
               </Button>
             </a>
           </Link>
-          <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg="white">
+          <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
             <Flex p="6">
               <Avatar size="lg" src={userInfo.photoURL ?? 'https://bit.ly/broken-link'} mr="2" />
               <Flex direction="column" justify="center">

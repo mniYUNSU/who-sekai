@@ -2,133 +2,133 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "workbench.colorCustomizations": {
-    "activityBar.background": "#0C0D12",
-    "sideBar.background": "#0C0D12",
-    "list.hoverForeground": "#fff",
-    "list.focusHighlightForeground": "#FFD700",
-    "quickInputList.focusForeground": "#dedee3",
-    "quickInput.background": "#16161E",
-    "sideBarTitle.foreground": "#dedee3",
-    "sideBarSectionHeader.background": "#16161E",
-    "sideBarSectionHeader.foreground": "#dedee3",
-    "minimap.background": "#16161E",
-    "editorGroup.border": "#16161E",
-    "editorGroupHeader.tabsBackground": "#16161E",
-    "tab.activeBackground": "#0C0D12",
-    "tab.inactiveBackground": "#16161E",
-    "tab.hoverForeground": "#dedee3",
-    "tab.hoverBackground": "#04060f",
-    "editor.background": "#0C0D12",
-    "editor.foreground": "#dedee3",
-    "tab.activeBorder": "#0C0D12",
-    "editorSuggestWidget.background": "#0c0d12e7",
-    "editorSuggestWidget.focusHighlightForeground": "#FFD700",
-    "editorSuggestWidget.border": "#7DCFFF",
-    "tab.activeBorderTop": "#dcd7ba",
-    "editor.selectionBackground": "#20264e",
-    "editor.selectionHighlightBackground": "#222a54",
-    "editor.selectionHighlightBorder": "#9BC968",
-    "editor.wordHighlightBorder": "#9BC968",
-    "editor.wordHighlightBackground": "#222a54",
-    "editor.wordHighlightStrongBorder": "#9BC968",
-    "editor.wordHighlightStrongBackground": "#222a54",
-    "editor.findMatchBackground": "#161c39",
-    "editor.findMatchHighlightBackground": "#2d3768",
-    "editor.findMatchBorder": "#FFD700",
-    "editor.hoverHighlightBackground": "#20264e",
-    "editor.lineHighlightBackground": "#16161E",
-    "editorBracketMatch.border": "#9BC968",
-    "editor.foldBackground": "#20264e",
-    "editorOverviewRuler.background": "#0C0D12",
-    "editorOverviewRuler.border": "#0C0D12",
-    "editorGutter.background": "#0C0D12",
-    "editorHoverWidget.background": "#0c0d12e7",
-    "editorHoverWidget.foreground": "#dedee3",
-    "editorHoverWidget.border": "#7DCFFF",
-    "statusBar.background": "#0C0D12",
-    "statusBar.foreground": "#dedee3",
-    "terminal.background": "#0C0D12",
-    "terminal.ansiGreen": "#87d034",
-    "gitDecoration.addedResourceForeground": "#87d034",
-    "gitDecoration.modifiedResourceForeground": "#FFD700",
-    "gitDecoration.deletedResourceForeground": "#ff0000",
-    "list.inactiveSelectionForeground": "#fff",
-    "list.activeSelectionForeground": "#fff",
-    "editor.smoothScrolling": true
-  },
-  "editor.tokenColorCustomizations": {
-    "textMateRules": [
-      {
-        "scope": ["meta.tag"],
-        "settings": {
-          "foreground": "#dedee3"
-        }
-      },
-      {
-        "scope": [
-          // the following elements will be in italic
-          "comment",
-          "storage.modifier", // static keyword
-          "storage.type.php", // typehints in methods keyword
-          "keyword.other.new.php", // new
-          "entity.other.attribute-name", // html attributes
-          "fenced_code.block.language.markdown", // markdown language modifier
-          "keyword", //import, export, return…
-          "storage.modifier", //static keyword
-          "storage.type", //class keyword
-          "keyword.control",
-          "constant.language",
-          "entity.other.attribute-name",
-          "entity.name.method",
-          "keyword.control.import.ts",
-          "keyword.control.import.tsx",
-          "keyword.control.import.js",
-          "keyword.control.flow.js",
-          "keyword.control.from.js",
-          "keyword.control.from.ts",
-          "keyword.control.from.tsx"
-        ],
-        "settings": {
-          "fontStyle": "italic"
-        }
-      },
-      {
-        "scope": [
-          // the following elements will be displayed in bold
-          "entity.name.type.class" // class names
-        ],
-        "settings": {
-          "fontStyle": ""
-        }
-      },
-      {
-        "scope": [
-          // the following elements will be displayed in bold and italic
-          "entity.name.section.markdown" // markdown headlines
-        ],
-        "settings": {
-          "fontStyle": "italic"
-        }
-      },
-      {
-        "scope": [
-          // the following elements will be excluded from italics
-          //   (VSCode has some defaults for italics)
-          "invalid",
-          "keyword.operator",
-          "constant.numeric.css",
-          "keyword.other.unit.px.css",
-          "constant.numeric.decimal.js",
-          "constant.numeric.json",
-          "comment.block",
-          "entity.other.attribute-name.class.css"
-        ],
-        "settings": {
-          "fontStyle": ""
-        }
-      }
-    ]
-  },
+  // "workbench.colorCustomizations": {
+  //   "activityBar.background": "#0C0D12",
+  //   "sideBar.background": "#0C0D12",
+  //   "list.hoverForeground": "#fff",
+  //   "list.focusHighlightForeground": "#FFD700",
+  //   "quickInputList.focusForeground": "#dedee3",
+  //   "quickInput.background": "#16161E",
+  //   "sideBarTitle.foreground": "#dedee3",
+  //   "sideBarSectionHeader.background": "#16161E",
+  //   "sideBarSectionHeader.foreground": "#dedee3",
+  //   "minimap.background": "#16161E",
+  //   "editorGroup.border": "#16161E",
+  //   "editorGroupHeader.tabsBackground": "#16161E",
+  //   "tab.activeBackground": "#0C0D12",
+  //   "tab.inactiveBackground": "#16161E",
+  //   "tab.hoverForeground": "#dedee3",
+  //   "tab.hoverBackground": "#04060f",
+  //   "editor.background": "#0C0D12",
+  //   "editor.foreground": "#dedee3",
+  //   "tab.activeBorder": "#0C0D12",
+  //   "editorSuggestWidget.background": "#0c0d12e7",
+  //   "editorSuggestWidget.focusHighlightForeground": "#FFD700",
+  //   "editorSuggestWidget.border": "#7DCFFF",
+  //   "tab.activeBorderTop": "#dcd7ba",
+  //   "editor.selectionBackground": "#20264e",
+  //   "editor.selectionHighlightBackground": "#222a54",
+  //   "editor.selectionHighlightBorder": "#9BC968",
+  //   "editor.wordHighlightBorder": "#9BC968",
+  //   "editor.wordHighlightBackground": "#222a54",
+  //   "editor.wordHighlightStrongBorder": "#9BC968",
+  //   "editor.wordHighlightStrongBackground": "#222a54",
+  //   "editor.findMatchBackground": "#161c39",
+  //   "editor.findMatchHighlightBackground": "#2d3768",
+  //   "editor.findMatchBorder": "#FFD700",
+  //   "editor.hoverHighlightBackground": "#20264e",
+  //   "editor.lineHighlightBackground": "#16161E",
+  //   "editorBracketMatch.border": "#9BC968",
+  //   "editor.foldBackground": "#20264e",
+  //   "editorOverviewRuler.background": "#0C0D12",
+  //   "editorOverviewRuler.border": "#0C0D12",
+  //   "editorGutter.background": "#0C0D12",
+  //   "editorHoverWidget.background": "#0c0d12e7",
+  //   "editorHoverWidget.foreground": "#dedee3",
+  //   "editorHoverWidget.border": "#7DCFFF",
+  //   "statusBar.background": "#0C0D12",
+  //   "statusBar.foreground": "#dedee3",
+  //   "terminal.background": "#0C0D12",
+  //   "terminal.ansiGreen": "#87d034",
+  //   "gitDecoration.addedResourceForeground": "#87d034",
+  //   "gitDecoration.modifiedResourceForeground": "#FFD700",
+  //   "gitDecoration.deletedResourceForeground": "#ff0000",
+  //   "list.inactiveSelectionForeground": "#fff",
+  //   "list.activeSelectionForeground": "#fff",
+  //   "editor.smoothScrolling": true
+  // },
+  // "editor.tokenColorCustomizations": {
+  //   "textMateRules": [
+  //     {
+  //       "scope": ["meta.tag"],
+  //       "settings": {
+  //         "foreground": "#dedee3"
+  //       }
+  //     },
+  //     {
+  //       "scope": [
+  //         // the following elements will be in italic
+  //         "comment",
+  //         "storage.modifier", // static keyword
+  //         "storage.type.php", // typehints in methods keyword
+  //         "keyword.other.new.php", // new
+  //         "entity.other.attribute-name", // html attributes
+  //         "fenced_code.block.language.markdown", // markdown language modifier
+  //         "keyword", //import, export, return…
+  //         "storage.modifier", //static keyword
+  //         "storage.type", //class keyword
+  //         "keyword.control",
+  //         "constant.language",
+  //         "entity.other.attribute-name",
+  //         "entity.name.method",
+  //         "keyword.control.import.ts",
+  //         "keyword.control.import.tsx",
+  //         "keyword.control.import.js",
+  //         "keyword.control.flow.js",
+  //         "keyword.control.from.js",
+  //         "keyword.control.from.ts",
+  //         "keyword.control.from.tsx"
+  //       ],
+  //       "settings": {
+  //         "fontStyle": "italic"
+  //       }
+  //     },
+  //     {
+  //       "scope": [
+  //         // the following elements will be displayed in bold
+  //         "entity.name.type.class" // class names
+  //       ],
+  //       "settings": {
+  //         "fontStyle": ""
+  //       }
+  //     },
+  //     {
+  //       "scope": [
+  //         // the following elements will be displayed in bold and italic
+  //         "entity.name.section.markdown" // markdown headlines
+  //       ],
+  //       "settings": {
+  //         "fontStyle": "italic"
+  //       }
+  //     },
+  //     {
+  //       "scope": [
+  //         // the following elements will be excluded from italics
+  //         //   (VSCode has some defaults for italics)
+  //         "invalid",
+  //         "keyword.operator",
+  //         "constant.numeric.css",
+  //         "keyword.other.unit.px.css",
+  //         "constant.numeric.decimal.js",
+  //         "constant.numeric.json",
+  //         "comment.block",
+  //         "entity.other.attribute-name.class.css"
+  //       ],
+  //       "settings": {
+  //         "fontStyle": ""
+  //       }
+  //     }
+  //   ]
+  // },
   "editor.tabSize": 2
 }

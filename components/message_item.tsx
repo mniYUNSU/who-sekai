@@ -12,6 +12,7 @@ import {
   Spacer,
   Text,
   Textarea,
+  useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
 import ResizeTextarea from 'react-textarea-autosize';
@@ -34,6 +35,11 @@ interface Props {
 const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendComplete, photoURL, item }: Props) {
   const [reply, setReply] = useState('');
   const toast = useToast();
+
+  const messageBoxColor = useColorModeValue('white', '#393649');
+  const messageBoxReplyColor = useColorModeValue('gray.100', '#504e62');
+  const dateColor = useColorModeValue('gray.500', 'gray.400');
+  const messageBoxInputColor = useColorModeValue('gray.100', 'gray.900');
 
   async function postReply() {
     const resp = await fetch('/api/messages.add.reply', {
@@ -65,7 +71,7 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
   const isDeny = item.deny !== undefined ? item.deny === true : false;
 
   return (
-    <Box borderRadius="md" width="full" bg="white" boxShadow="md">
+    <Box borderRadius="md" width="full" bg={messageBoxColor} boxShadow="md">
       <Box>
         <Flex px="2" pt="2" alignItems="center">
           <Avatar
@@ -75,7 +81,7 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
           <Text fontSize="xx-small" ml="1.5">
             {item.author ? item.author.displayName : 'Anonymous'}
           </Text>
-          <Text whiteSpace="pre-line" fontSize="xx-small" color="gray.500" ml="1">
+          <Text whiteSpace="pre-line" fontSize="xx-small" color={dateColor} ml="1">
             {convertDateToString(item.createAt)}
           </Text>
           <Spacer />
@@ -125,10 +131,10 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
               <Box pt="2">
                 <Avatar size="xs" src={photoURL} mr="2" />
               </Box>
-              <Box borderRadius="md" p="2" width="full" bg="gray.100">
+              <Box borderRadius="md" p="2" width="full" bg={messageBoxReplyColor}>
                 <Flex alignItems="center">
                   <Text fontSize="xs">{displayName}</Text>
-                  <Text whiteSpace="pre-line" fontSize="xs" color="gray" ml="1">
+                  <Text whiteSpace="pre-line" fontSize="xs" color={dateColor} ml="1">
                     {convertDateToString(item.replyAt!)}
                   </Text>
                 </Flex>
@@ -147,7 +153,7 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
                 <Avatar size="xs" src={photoURL} mr="2" />
               </Box>
 
-              <Box borderRadius="md" width="full" bg="gray.100" mr="2">
+              <Box borderRadius="md" width="full" bg={messageBoxInputColor} mr="2">
                 <Textarea
                   border="none"
                   boxShadow="none !important"
