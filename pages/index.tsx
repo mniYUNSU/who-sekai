@@ -14,7 +14,7 @@ const IndexPage: NextPage = function () {
 
   return (
     <ServiceLayout title="누군가의 세계 | WHO-SEKAI" backgroundColor={bgColor} minH="100vh">
-      <Box maxW="md" mx="auto" pt={10}>
+      <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt={10}>
         <img src={logoColor} alt="main logo" />
         <Flex justify="center">
           <Heading>누군가의 세계 | WHO-SEKAI</Heading>

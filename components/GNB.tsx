@@ -69,7 +69,7 @@ const GNB = function () {
         </Box>
         <Spacer />
         <Box>
-          <Text fontSize="lg" fontWeight={800} color={fontColor}>
+          <Text fontSize={{ base: 'md', md: 'md', lg: 'lg' }} color={fontColor} fontWeight={800}>
             WHO-SEKAI
           </Text>
         </Box>

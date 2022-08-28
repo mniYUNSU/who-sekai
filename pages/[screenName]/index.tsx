@@ -142,7 +142,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
       backgroundColor={bgColor}
       pb="100"
     >
-      <Box maxW="md" mx="auto" pt="6">
+      <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6">
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
           <Flex p="6">
             <Avatar size="lg" src={userInfo.photoURL ?? 'https://bit.ly/broken-link'} mr="2" />
@@ -195,8 +195,11 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
               size="sm"
               disabled={message.length === 0}
               onClick={async () => {
-                const postData: { message: string; uid: string; author?: { displayName: string; photoURL?: string } } =
-                  { message, uid: userInfo.uid };
+                const postData: {
+                  message: string;
+                  uid: string;
+                  author?: { displayName: string; photoURL?: string };
+                } = { message, uid: userInfo.uid };
 
                 if (isAnonymous === false) {
                   postData.author = {
@@ -235,7 +238,12 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
               isChecked={isAnonymous}
               onChange={() => {
                 if (authUser === null) {
-                  toast({ title: '로그인이 필요합니다.', position: 'top-right', status: 'warning', isClosable: true });
+                  toast({
+                    title: '로그인이 필요합니다.',
+                    position: 'top-right',
+                    status: 'warning',
+                    isClosable: true,
+                  });
                   return;
                 }
                 setIsAnonymous((prev) => !prev);
