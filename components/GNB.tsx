@@ -65,11 +65,10 @@ const GNB = function () {
   return (
     <Box borderBottom={1} borderStyle="solid" borderColor="gray.200" bgGradient={bgGradient}>
       <Flex minH="60px" py={{ base: 2 }} px={{ base: 2 }} align="center" maxW="md" mx="auto">
-        <img style={{ height: '40px', width: '50px', marginRight: '2px' }} src={logoColor} alt="logo" />
-        <Box w={10} h="40px" />
+        <img style={{ height: '40px', width: '50px' }} src={logoColor} alt="logo" />
         <Spacer />
-        <Box>
-          <Text fontSize={{ base: 'md', md: 'md', lg: 'lg' }} color={fontColor} fontWeight={800}>
+        <Box ml={10}>
+          <Text fontSize={{ base: 'md', md: 'md', lg: 'lg' }} color={fontColor} fontWeight={800} textAlign="center">
             WHO-SEKAI
           </Text>
         </Box>
