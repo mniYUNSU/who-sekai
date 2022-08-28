@@ -64,7 +64,7 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
         backgroundColor={bgColor}
         pb="100"
       >
-        <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6">
+        <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6" px={{ base: 2, md: 2, lg: 0 }}>
           <Link href={`/${screenName}`}>
             <a>
               <Button leftIcon={<ChevronLeftIcon />} mb="2" fontSize="sm">

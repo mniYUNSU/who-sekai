@@ -20,14 +20,16 @@ import { useAuth } from '@/contexts/auth_user.context';
 const GNB = function () {
   const { loading, authUser, signOut, signInWithGoogle } = useAuth();
   const { colorMode, toggleColorMode } = useColorMode();
-
-  const bgColor = useColorModeValue('white', 'blackAlpha.900');
+  // bg: mode('gray.50', 'gray.900')(props),
+  const bgGradient = useColorModeValue('linear(to-b, gray.50, white)', 'linear(to-b, gray.900, blackAlpha.700)');
   const fontColor = useColorModeValue('gray.900', 'white');
   const logoColor = useColorModeValue('/logo.svg', '/logo_dark.svg');
 
   const loginBtn = (
     <Button
-      fontSize="sm"
+      w={16}
+      h={9}
+      fontSize={{ base: 'xs', md: 'sm', lg: 'sm' }}
       fontWeight={600}
       color="white"
       bg="teal.400"
@@ -61,12 +63,10 @@ const GNB = function () {
   const authInitialized = loading || authUser === null;
 
   return (
-    <Box borderBottom={1} borderStyle="solid" borderColor="gray.200" bg={bgColor}>
-      <Flex minH="60px" py={{ base: 2 }} px={{ base: 4 }} align="center" maxW="md" mx="auto">
-        {/* <Spacer /> */}
-        <Box>
-          <img style={{ height: '40px', width: '100%' }} src={logoColor} alt="logo" />
-        </Box>
+    <Box borderBottom={1} borderStyle="solid" borderColor="gray.200" bgGradient={bgGradient}>
+      <Flex minH="60px" py={{ base: 2 }} px={{ base: 2 }} align="center" maxW="md" mx="auto">
+        <img style={{ height: '40px', width: '50px', marginRight: '2px' }} src={logoColor} alt="logo" />
+        <Box w={10} h="40px" />
         <Spacer />
         <Box>
           <Text fontSize={{ base: 'md', md: 'md', lg: 'lg' }} color={fontColor} fontWeight={800}>
@@ -82,12 +82,12 @@ const GNB = function () {
           variant="ghost"
           bg="transparent"
           onClick={toggleColorMode}
-          mr="10px"
+          mr="2px"
           _focus={{
             boxShadow: '0',
           }}
         >
-          <Icon as={colorMode === 'light' ? MoonIcon : SunIcon} w={6} h={6} color={fontColor} />
+          <Icon as={colorMode === 'light' ? MoonIcon : SunIcon} w={5} h={5} color={fontColor} />
         </Button>
         <Box>{authInitialized ? loginBtn : logOutBtn}</Box>
       </Flex>

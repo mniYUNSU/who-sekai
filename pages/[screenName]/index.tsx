@@ -142,7 +142,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
       backgroundColor={bgColor}
       pb="100"
     >
-      <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6">
+      <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6" px={{ base: 2, md: 2, lg: 0 }}>
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
           <Flex p="6">
             <Avatar size="lg" src={userInfo.photoURL ?? 'https://bit.ly/broken-link'} mr="2" />
@@ -163,11 +163,11 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
             <Textarea
               bg={messageBoxInputColor}
               border="none"
-              placeholder={`${userInfo.displayName}의 세계에 어떤 이야기를 남길까요?`}
+              placeholder="어떤 이야기를 남길까요?"
               resize="none"
               minH="unset"
               overflow="hidden"
-              fontSize="xs"
+              fontSize="md"
               mr="2"
               maxRows={7}
               as={ResizeTextarea}
