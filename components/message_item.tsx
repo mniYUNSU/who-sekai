@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import ResizeTextarea from 'react-textarea-autosize';
 import { useState } from 'react';
+import Head from 'next/head';
 import { InMessage } from '@/models/message/in_message';
 import convertDateToString from '@/utils/convert_date_to_string';
 import MoreBtnIcon from './more_btn_icon';
@@ -100,144 +101,149 @@ const MessageItem = function ({
   function autoLink(message: string) {
     const Rexp =
       /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?/=~_|!:,.;]*)[-A-Z0-9+&@#/%=~_|])/gi;
-    return message.replace(Rexp, "<a href='$1' target='_blank'>📎 $1</a>");
+    return message.replace(Rexp, "<div><a href='$1' target='_blank'>📎 $1</a></div>");
   }
 
   return (
-    <Box borderRadius="md" width="full" bg={messageBoxColor} boxShadow="md">
-      <Box>
-        <Flex px="2" pt="2" alignItems="center">
-          <Avatar
-            size="xs"
-            src={item.author ? item.author.photoURL ?? 'https://bit.ly/broken-link' : 'https://bit.ly/broken-link'}
-          />
-          <Text fontSize="xx-small" ml="1.5">
-            {item.author ? item.author.displayName : 'Anonymous'}
-          </Text>
-          <Text whiteSpace="pre-line" fontSize="xx-small" color={dateColor} ml="1">
-            {convertDateToString(item.createAt)}
-          </Text>
-          <Spacer />
-          {isOwner && (
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<MoreBtnIcon />}
-                width="24px"
-                height="24px"
-                borderRadius="full"
-                variant="link"
-                size="xs"
-              />
-              <MenuList>
-                <MenuItem
-                  onClick={() => {
-                    updateMessage({ deny: item.deny !== undefined ? !item.deny : true });
-                  }}
-                >
-                  {isDeny ? '공개로 만들기' : '비공개로 만들기'}
-                </MenuItem>
-                {window.location.href === `${window.location.origin}/${screenName}` && (
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+      </Head>
+      <Box borderRadius="md" width="full" bg={messageBoxColor} boxShadow="md">
+        <Box>
+          <Flex px="2" pt="2" alignItems="center">
+            <Avatar
+              size="xs"
+              src={item.author ? item.author.photoURL ?? 'https://bit.ly/broken-link' : 'https://bit.ly/broken-link'}
+            />
+            <Text fontSize="xx-small" ml="1.5">
+              {item.author ? item.author.displayName : 'Anonymous'}
+            </Text>
+            <Text whiteSpace="pre-line" fontSize="xx-small" color={dateColor} ml="1">
+              {convertDateToString(item.createAt)}
+            </Text>
+            <Spacer />
+            {isOwner && (
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  icon={<MoreBtnIcon />}
+                  width="24px"
+                  height="24px"
+                  borderRadius="full"
+                  variant="link"
+                  size="xs"
+                />
+                <MenuList>
                   <MenuItem
                     onClick={() => {
-                      window.location.href = `/${screenName}/${item.id}`;
+                      updateMessage({ deny: item.deny !== undefined ? !item.deny : true });
                     }}
                   >
-                    이야기 상세 보기
+                    {isDeny ? '공개로 만들기' : '비공개로 만들기'}
                   </MenuItem>
-                )}
-                <MenuItem
-                  onClick={() => {
-                    deleteMessage();
+                  {window.location.href === `${window.location.origin}/${screenName}` && (
+                    <MenuItem
+                      onClick={() => {
+                        window.location.href = `/${screenName}/${item.id}`;
+                      }}
+                    >
+                      이야기 상세 보기
+                    </MenuItem>
+                  )}
+                  <MenuItem
+                    onClick={() => {
+                      deleteMessage();
+                    }}
+                  >
+                    이야기 삭제 하기
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
+          </Flex>
+        </Box>
+        <Box p="2">
+          <Box borderRadius="md" borderWidth="1px" p="2">
+            <Text whiteSpace="pre-line" fontSize="sm" dangerouslySetInnerHTML={{ __html: autoLink(item.message) }} />
+          </Box>
+          {haveReply && (
+            <Box pt="2">
+              <Divider />
+              <Box display="flex" mt="2">
+                <Box pt="2">
+                  <Avatar size="xs" src={photoURL} mr="2" />
+                </Box>
+                <Box borderRadius="md" p="2" width="full" bg={messageBoxReplyColor}>
+                  <Flex alignItems="center">
+                    <Text fontSize="xs">{displayName}</Text>
+                    <Text whiteSpace="pre-line" fontSize="xs" color={dateColor} ml="1">
+                      {convertDateToString(item.replyAt!)}
+                    </Text>
+                  </Flex>
+
+                  {item.reply ? (
+                    <Text
+                      whiteSpace="pre-line"
+                      fontSize="xs"
+                      mt="1.5"
+                      dangerouslySetInnerHTML={{ __html: autoLink(item.reply) }}
+                    />
+                  ) : (
+                    <Text whiteSpace="pre-line" fontSize="xs" mt="1.5">
+                      {item.reply}
+                    </Text>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          )}
+          {haveReply === false && isOwner && (
+            <Box pt="2">
+              <Divider />
+              <Box display="flex" mt="2">
+                <Box pt="1">
+                  <Avatar size="xs" src={photoURL} mr="2" />
+                </Box>
+
+                <Box borderRadius="md" width="full" bg={messageBoxInputColor} mr="2">
+                  <Textarea
+                    border="none"
+                    boxShadow="none !important"
+                    resize="none"
+                    minH="unset"
+                    overflow="hidden"
+                    fontSize="sm"
+                    placeholder="댓글을 입력해주세요"
+                    as={ResizeTextarea}
+                    value={reply}
+                    onChange={(e) => {
+                      setReply(e.currentTarget.value);
+                    }}
+                  />
+                </Box>
+                <Button
+                  disabled={reply.length === 0}
+                  color="white"
+                  bgColor="blue.400"
+                  isLoading={!!loading}
+                  colorScheme="blue"
+                  variant="solid"
+                  size="sm"
+                  onClick={async () => {
+                    setLoading(true);
+                    await postReply();
+                    setLoading(false);
                   }}
                 >
-                  이야기 삭제 하기
-                </MenuItem>
-              </MenuList>
-            </Menu>
+                  등록
+                </Button>
+              </Box>
+            </Box>
           )}
-        </Flex>
-      </Box>
-      <Box p="2">
-        <Box borderRadius="md" borderWidth="1px" p="2">
-          <Text whiteSpace="pre-line" fontSize="sm" dangerouslySetInnerHTML={{ __html: autoLink(item.message) }} />
         </Box>
-        {haveReply && (
-          <Box pt="2">
-            <Divider />
-            <Box display="flex" mt="2">
-              <Box pt="2">
-                <Avatar size="xs" src={photoURL} mr="2" />
-              </Box>
-              <Box borderRadius="md" p="2" width="full" bg={messageBoxReplyColor}>
-                <Flex alignItems="center">
-                  <Text fontSize="xs">{displayName}</Text>
-                  <Text whiteSpace="pre-line" fontSize="xs" color={dateColor} ml="1">
-                    {convertDateToString(item.replyAt!)}
-                  </Text>
-                </Flex>
-
-                {item.reply ? (
-                  <Text
-                    whiteSpace="pre-line"
-                    fontSize="xs"
-                    mt="1.5"
-                    dangerouslySetInnerHTML={{ __html: autoLink(item.reply) }}
-                  />
-                ) : (
-                  <Text whiteSpace="pre-line" fontSize="xs" mt="1.5">
-                    {item.reply}
-                  </Text>
-                )}
-              </Box>
-            </Box>
-          </Box>
-        )}
-        {haveReply === false && isOwner && (
-          <Box pt="2">
-            <Divider />
-            <Box display="flex" mt="2">
-              <Box pt="1">
-                <Avatar size="xs" src={photoURL} mr="2" />
-              </Box>
-
-              <Box borderRadius="md" width="full" bg={messageBoxInputColor} mr="2">
-                <Textarea
-                  border="none"
-                  boxShadow="none !important"
-                  resize="none"
-                  minH="unset"
-                  overflow="hidden"
-                  fontSize="sm"
-                  placeholder="댓글을 입력해주세요"
-                  as={ResizeTextarea}
-                  value={reply}
-                  onChange={(e) => {
-                    setReply(e.currentTarget.value);
-                  }}
-                />
-              </Box>
-              <Button
-                disabled={reply.length === 0}
-                color="white"
-                bgColor="blue.400"
-                isLoading={!!loading}
-                colorScheme="blue"
-                variant="solid"
-                size="sm"
-                onClick={async () => {
-                  setLoading(true);
-                  await postReply();
-                  setLoading(false);
-                }}
-              >
-                등록
-              </Button>
-            </Box>
-          </Box>
-        )}
       </Box>
-    </Box>
+    </>
   );
 };
 
