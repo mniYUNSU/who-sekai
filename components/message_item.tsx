@@ -30,7 +30,7 @@ interface Props {
   item: InMessage;
   onSendComplete: () => void;
   screenName: string;
-  onDeleteComplete?: () => void;
+  onDeleteComplete: () => void;
 }
 
 const MessageItem = function ({
