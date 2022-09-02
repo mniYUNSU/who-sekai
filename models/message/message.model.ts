@@ -189,6 +189,28 @@ async function get({ uid, messageId }: { uid: string; messageId: string }) {
   return data;
 }
 
+async function deleteMessage({ uid, messageId }: { uid: string; messageId: string }) {
+  const memberRef = Firestore.collection(MEMBER_COL).doc(uid);
+  const messageRef = Firestore.collection(MEMBER_COL).doc(uid).collection(MSG_COL).doc(messageId);
+
+  await Firestore.runTransaction(async (transaction) => {
+    const memberDoc = await transaction.get(memberRef);
+
+    let messageCount = 1;
+    const memberInfo = memberDoc.data() as InAuthUser & { messageCount?: number };
+
+    if (memberInfo.messageCount !== undefined) {
+      messageCount = memberInfo.messageCount;
+    }
+    if (memberDoc.exists === false) {
+      throw new CustomServerError({ statusCode: 400, message: '존재하지 않는 사용자' });
+    }
+
+    transaction.delete(messageRef);
+    transaction.update(memberRef, { messageCount: messageCount - 1 });
+  });
+}
+
 const MessageModel = {
   post,
   updateMessage,
@@ -196,6 +218,7 @@ const MessageModel = {
   postReply,
   get,
   listWithPage,
+  deleteMessage,
 };
 
 export default MessageModel;

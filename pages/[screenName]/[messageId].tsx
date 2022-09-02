@@ -57,6 +57,7 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="WHOSEKAI" />
         <meta name="twitter:title" content={messageData.message} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
       </Head>
       <ServiceLayout
         title={`${userInfo.displayName}의 세계 | WHO-SEKAI `}

@@ -69,6 +69,22 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
   return res.status(200).json(data);
 }
 
+async function deleteMessage(req: NextApiRequest, res: NextApiResponse) {
+  const { uid, messageId } = req.query;
+  if (uid === undefined) {
+    throw new BadReqError('uid가 누락되었습니다.');
+  }
+  if (messageId === undefined) {
+    throw new BadReqError('messageId가 누락되었습니다.');
+  }
+
+  const uidToStr = Array.isArray(uid) ? uid[0] : uid;
+  const messageIdToStr = Array.isArray(messageId) ? messageId[0] : messageId;
+
+  const data = await MessageModel.deleteMessage({ uid: uidToStr, messageId: messageIdToStr });
+  return res.status(200).json(data);
+}
+
 async function updateMessage(req: NextApiRequest, res: NextApiResponse) {
   const token = req.headers.authorization;
   if (token === undefined) {
@@ -99,6 +115,6 @@ async function updateMessage(req: NextApiRequest, res: NextApiResponse) {
   return res.status(200).json(result);
 }
 
-const MessageCtrl = { post, list, postReply, get, updateMessage };
+const MessageCtrl = { post, list, postReply, get, updateMessage, deleteMessage };
 
 export default MessageCtrl;

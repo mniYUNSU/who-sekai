@@ -30,10 +30,21 @@ interface Props {
   item: InMessage;
   onSendComplete: () => void;
   screenName: string;
+  onDeleteComplete: () => void;
 }
 
-const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendComplete, photoURL, item }: Props) {
+const MessageItem = function ({
+  uid,
+  screenName,
+  isOwner,
+  displayName,
+  onSendComplete,
+  photoURL,
+  item,
+  onDeleteComplete,
+}: Props) {
   const [reply, setReply] = useState('');
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
 
   const messageBoxColor = useColorModeValue('white', '#393649');
@@ -67,6 +78,22 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
       onSendComplete();
     }
   }
+
+  async function deleteMessage() {
+    const token = await FirebaseClient.getInstance().Auth.currentUser?.getIdToken();
+    if (token === undefined) {
+      toast({ title: '로그인한 사용자만 사용할 수 있는 메뉴입니다.' });
+      return;
+    }
+    const resp = await fetch(`/api/messages.delete?uid=${uid}&messageId=${item.id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', authorization: token },
+    });
+    if (resp.status < 300) {
+      onDeleteComplete();
+    }
+  }
+
   const haveReply = item.reply !== undefined;
   const isDeny = item.deny !== undefined ? item.deny === true : false;
 
@@ -113,6 +140,13 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
                     이야기 상세 보기
                   </MenuItem>
                 )}
+                <MenuItem
+                  onClick={() => {
+                    deleteMessage();
+                  }}
+                >
+                  이야기 삭제 하기
+                </MenuItem>
               </MenuList>
             </Menu>
           )}
@@ -160,7 +194,7 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
                   resize="none"
                   minH="unset"
                   overflow="hidden"
-                  fontSize="md"
+                  fontSize="sm"
                   placeholder="댓글을 입력해주세요"
                   as={ResizeTextarea}
                   value={reply}
@@ -173,11 +207,16 @@ const MessageItem = function ({ uid, screenName, isOwner, displayName, onSendCom
                 disabled={reply.length === 0}
                 color="white"
                 bgColor="blue.400"
+                isLoading={!!loading}
                 colorScheme="blue"
                 variant="solid"
                 size="sm"
-                onClick={() => {
-                  postReply();
+                onClick={async () => {
+                  setLoading(true);
+                  await postReply();
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, 50);
                 }}
               >
                 등록

@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={overrides}>
       <AuthUserProvider>
+        {' '}
         <Component {...pageProps} />
       </AuthUserProvider>
     </ChakraProvider>

@@ -17,6 +17,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import ResizeTextarea from 'react-textarea-autosize';
 import { useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import Head from 'next/head';
 import { ServiceLayout } from '@/components/service_layout';
 import { useAuth } from '@/contexts/auth_user.context';
 import { InAuthUser } from '@/models/in_auth_user';
@@ -78,6 +79,8 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
   const [totalPages, setTotalPages] = useState(1);
   const [messageList, setMessageList] = useState<InMessage[]>([]);
   const [messageListFetchTrigger, setMessageListFetchTrigger] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const toast = useToast();
   const { authUser } = useAuth();
 
@@ -136,155 +139,167 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
   const isOwner = authUser !== null && authUser.uid === userInfo.uid;
 
   return (
-    <ServiceLayout
-      title={`${userInfo.displayName}의 세계 | WHO-SEKAI `}
-      minH="100vh"
-      backgroundColor={bgColor}
-      pb="100"
-    >
-      <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6" px={{ base: 2, md: 2, lg: 0 }}>
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
-          <Flex p="6">
-            <Avatar size="lg" src={userInfo.photoURL ?? 'https://bit.ly/broken-link'} mr="2" />
-            <Flex direction="column" justify="center">
-              <Text fontSize="md">{userInfo.displayName}</Text>
-              <Text fontSize="xs">{userInfo.email}</Text>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+      </Head>
+      <ServiceLayout
+        title={`${userInfo.displayName}의 세계 | WHO-SEKAI `}
+        minH="100vh"
+        backgroundColor={bgColor}
+        pb="100"
+      >
+        <Box maxW={{ base: 'sm', md: 'md', lg: 'md' }} mx="auto" pt="6" px={{ base: 2, md: 2, lg: 0 }}>
+          <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
+            <Flex p="6">
+              <Avatar size="lg" src={userInfo.photoURL ?? 'https://bit.ly/broken-link'} mr="2" />
+              <Flex direction="column" justify="center">
+                <Text fontSize="md">{userInfo.displayName}</Text>
+                <Text fontSize="xs">{userInfo.email}</Text>
+              </Flex>
             </Flex>
-          </Flex>
-        </Box>
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
-          <Flex align="center" p="2">
-            <Avatar
-              size="xs"
-              src={isAnonymous ? 'https://bit.ly/broken-link' : authUser?.photoURL ?? 'https://bit.ly/broken-link'}
-              mr="2"
-              bg="teal.500"
-            />
-            <Textarea
-              bg={messageBoxInputColor}
-              border="none"
-              placeholder="어떤 이야기를 남길까요?"
-              resize="none"
-              minH="unset"
-              overflow="hidden"
-              fontSize="md"
-              mr="2"
-              maxRows={7}
-              as={ResizeTextarea}
-              value={message}
-              onChange={(e) => {
-                if (e.currentTarget.value) {
-                  const lineCount = e.currentTarget.value.match(/[^\n]*\n[^\n]*/gi)?.length ?? 1;
-                  if (lineCount >= 7) {
+          </Box>
+          <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb="2" bg={messageBoxColor}>
+            <Flex align="center" p="2">
+              <Avatar
+                size="xs"
+                src={isAnonymous ? 'https://bit.ly/broken-link' : authUser?.photoURL ?? 'https://bit.ly/broken-link'}
+                mr="2"
+                bg="teal.500"
+              />
+              <Textarea
+                bg={messageBoxInputColor}
+                border="none"
+                placeholder="어떤 이야기를 남길까요?"
+                resize="none"
+                minH="unset"
+                overflow="hidden"
+                fontSize="sm"
+                mr="2"
+                maxRows={7}
+                as={ResizeTextarea}
+                value={message}
+                onChange={(e) => {
+                  if (e.currentTarget.value) {
+                    const lineCount = e.currentTarget.value.match(/[^\n]*\n[^\n]*/gi)?.length ?? 1;
+                    if (lineCount >= 7) {
+                      toast({
+                        title: '최대 7줄까지만 입력 가능합니다.',
+                        position: 'top-right',
+                        isClosable: true,
+                      });
+                      return;
+                    }
+                  }
+                  setMessage(e.currentTarget.value);
+                }}
+              />
+              <Button
+                color="white"
+                bgColor={submitButtonColor}
+                colorScheme="blue"
+                variant="solid"
+                size="sm"
+                isLoading={!!loading}
+                disabled={message.length === 0}
+                onClick={async () => {
+                  setLoading(true);
+                  const postData: {
+                    message: string;
+                    uid: string;
+                    author?: { displayName: string; photoURL?: string };
+                  } = { message, uid: userInfo.uid };
+
+                  if (isAnonymous === false) {
+                    postData.author = {
+                      photoURL: authUser?.photoURL ?? 'https://bit.ly/broken-link',
+                      displayName: authUser?.displayName ?? makeAnonymousName(),
+                    };
+                  } else {
+                    postData.author = {
+                      photoURL: `https://xsgames.co/randomusers/assets/avatars/pixel/${
+                        Math.floor(Math.random() * 30) + 1
+                      }.jpg`,
+                      displayName: makeAnonymousName(),
+                    };
+                  }
+
+                  const messageResp = await postMessage(postData);
+                  if (messageResp.result === false) {
+                    toast({ title: '메시지 등록 실패', position: 'top-right' });
+                  }
+
+                  setMessage('');
+                  setPage(1);
+                  setTimeout(() => {
+                    setLoading(false);
+                    setMessageListFetchTrigger((prev) => !prev);
+                  }, 50);
+                }}
+              >
+                등록
+              </Button>
+            </Flex>
+            <FormControl display="flex" alignItems="center" mt="1" mx="2" pb="2">
+              <Switch
+                size="sm"
+                colorScheme="blue"
+                id="anonymous"
+                mr="1"
+                isChecked={isAnonymous}
+                onChange={() => {
+                  if (authUser === null) {
                     toast({
-                      title: '최대 7줄까지만 입력 가능합니다.',
+                      title: '로그인이 필요합니다.',
                       position: 'top-right',
+                      status: 'warning',
                       isClosable: true,
                     });
                     return;
                   }
-                }
-                setMessage(e.currentTarget.value);
-              }}
-            />
+                  setIsAnonymous((prev) => !prev);
+                }}
+              />
+              <FormLabel htmlFor="anonymous" mb="0" fontSize="xx-small">
+                익명으로 남기기
+              </FormLabel>
+            </FormControl>
+          </Box>
+          <VStack spacing="12px" mt="6">
+            {messageList.map((messageData) => (
+              <MessageItem
+                key={`message-item-${userInfo.uid}-${messageData.id}`}
+                item={messageData}
+                uid={userInfo.uid}
+                screenName={screenName}
+                displayName={userInfo.displayName ?? ''}
+                photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
+                isOwner={isOwner}
+                onSendComplete={() => {
+                  fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
+                }}
+                onDeleteComplete={() => {
+                  fetchMessageList(userInfo.uid);
+                }}
+              />
+            ))}
+          </VStack>
+          {totalPages > page && (
             <Button
-              color="white"
-              bgColor={submitButtonColor}
-              colorScheme="blue"
-              variant="solid"
-              size="sm"
-              disabled={message.length === 0}
-              onClick={async () => {
-                const postData: {
-                  message: string;
-                  uid: string;
-                  author?: { displayName: string; photoURL?: string };
-                } = { message, uid: userInfo.uid };
-
-                if (isAnonymous === false) {
-                  postData.author = {
-                    photoURL: authUser?.photoURL ?? 'https://bit.ly/broken-link',
-                    displayName: authUser?.displayName ?? makeAnonymousName(),
-                  };
-                } else {
-                  postData.author = {
-                    photoURL: `https://xsgames.co/randomusers/assets/avatars/pixel/${
-                      Math.floor(Math.random() * 30) + 1
-                    }.jpg`,
-                    displayName: makeAnonymousName(),
-                  };
-                }
-
-                const messageResp = await postMessage(postData);
-                if (messageResp.result === false) {
-                  toast({ title: '메시지 등록 실패', position: 'top-right' });
-                }
-                setMessage('');
-                setPage(1);
-                setTimeout(() => {
-                  setMessageListFetchTrigger((prev) => !prev);
-                }, 50);
+              width="full"
+              mt="2"
+              fontSize="sm"
+              leftIcon={<TriangleDownIcon />}
+              onClick={() => {
+                setPage((p) => p + 1);
               }}
             >
-              등록
+              더보기
             </Button>
-          </Flex>
-          <FormControl display="flex" alignItems="center" mt="1" mx="2" pb="2">
-            <Switch
-              size="sm"
-              colorScheme="blue"
-              id="anonymous"
-              mr="1"
-              isChecked={isAnonymous}
-              onChange={() => {
-                if (authUser === null) {
-                  toast({
-                    title: '로그인이 필요합니다.',
-                    position: 'top-right',
-                    status: 'warning',
-                    isClosable: true,
-                  });
-                  return;
-                }
-                setIsAnonymous((prev) => !prev);
-              }}
-            />
-            <FormLabel htmlFor="anonymous" mb="0" fontSize="xx-small">
-              익명으로 남기기
-            </FormLabel>
-          </FormControl>
+          )}
         </Box>
-        <VStack spacing="12px" mt="6">
-          {messageList.map((messageData) => (
-            <MessageItem
-              key={`message-item-${userInfo.uid}-${messageData.id}`}
-              item={messageData}
-              uid={userInfo.uid}
-              screenName={screenName}
-              displayName={userInfo.displayName ?? ''}
-              photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
-              isOwner={isOwner}
-              onSendComplete={() => {
-                fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
-              }}
-            />
-          ))}
-        </VStack>
-        {totalPages > page && (
-          <Button
-            width="full"
-            mt="2"
-            fontSize="sm"
-            leftIcon={<TriangleDownIcon />}
-            onClick={() => {
-              setPage((p) => p + 1);
-            }}
-          >
-            더보기
-          </Button>
-        )}
-      </Box>
-    </ServiceLayout>
+      </ServiceLayout>
+    </>
   );
 };
 
