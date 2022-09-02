@@ -16,7 +16,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import ResizeTextarea from 'react-textarea-autosize';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { InMessage } from '@/models/message/in_message';
 import convertDateToString from '@/utils/convert_date_to_string';
 import MoreBtnIcon from './more_btn_icon';
@@ -97,6 +97,12 @@ const MessageItem = function ({
   const haveReply = item.reply !== undefined;
   const isDeny = item.deny !== undefined ? item.deny === true : false;
 
+  function autoLink(message: string) {
+    const Rexp =
+      /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?/=~_|!:,.;]*)[-A-Z0-9+&@#/%=~_|])/gi;
+    return message.replace(Rexp, "<a href='$1' target='_blank'>📎 $1</a>");
+  }
+
   return (
     <Box borderRadius="md" width="full" bg={messageBoxColor} boxShadow="md">
       <Box>
@@ -154,9 +160,7 @@ const MessageItem = function ({
       </Box>
       <Box p="2">
         <Box borderRadius="md" borderWidth="1px" p="2">
-          <Text whiteSpace="pre-line" fontSize="sm">
-            {item.message}
-          </Text>
+          <Text whiteSpace="pre-line" fontSize="sm" dangerouslySetInnerHTML={{ __html: autoLink(item.message) }} />
         </Box>
         {haveReply && (
           <Box pt="2">
@@ -172,9 +176,19 @@ const MessageItem = function ({
                     {convertDateToString(item.replyAt!)}
                   </Text>
                 </Flex>
-                <Text whiteSpace="pre-line" fontSize="xs" mt="1.5">
-                  {item.reply}
-                </Text>
+
+                {item.reply ? (
+                  <Text
+                    whiteSpace="pre-line"
+                    fontSize="xs"
+                    mt="1.5"
+                    dangerouslySetInnerHTML={{ __html: autoLink(item.reply) }}
+                  />
+                ) : (
+                  <Text whiteSpace="pre-line" fontSize="xs" mt="1.5">
+                    {item.reply}
+                  </Text>
+                )}
               </Box>
             </Box>
           </Box>
