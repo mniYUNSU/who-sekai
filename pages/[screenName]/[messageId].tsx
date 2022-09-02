@@ -25,6 +25,10 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
   const bgColor = useColorModeValue('gray.50', 'gray.900');
   const messageBoxColor = useColorModeValue('white', '#393649');
 
+  async function onDeleteComplete() {
+    window.location.replace(`/${screenName}`);
+  }
+
   async function fetchMessageInfo({ uid, messageId }: { uid: string; messageId: string }) {
     try {
       const resp = await fetch(`/api/messages.info?uid=${uid}&messageId=${messageId}`);
@@ -91,6 +95,9 @@ const MessagePage: NextPage<Props> = function ({ userInfo, messageData: initMsgD
             isOwner={isOwner}
             onSendComplete={() => {
               fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
+            }}
+            onDeleteComplete={() => {
+              onDeleteComplete();
             }}
           />
         </Box>
