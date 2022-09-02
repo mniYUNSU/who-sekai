@@ -16,7 +16,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import ResizeTextarea from 'react-textarea-autosize';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { InMessage } from '@/models/message/in_message';
 import convertDateToString from '@/utils/convert_date_to_string';
 import MoreBtnIcon from './more_btn_icon';
