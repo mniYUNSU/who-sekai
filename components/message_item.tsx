@@ -214,9 +214,7 @@ const MessageItem = function ({
                 onClick={async () => {
                   setLoading(true);
                   await postReply();
-                  setTimeout(() => {
-                    setLoading(false);
-                  }, 50);
+                  setLoading(false);
                 }}
               >
                 등록
