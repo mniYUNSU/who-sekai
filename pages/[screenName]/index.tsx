@@ -279,7 +279,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
                   fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
                 }}
                 onDeleteComplete={() => {
-                  fetchMessageList(userInfo.uid);
+                  window.location.reload();
                 }}
               />
             ))}

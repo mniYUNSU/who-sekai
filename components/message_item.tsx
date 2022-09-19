@@ -16,7 +16,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import ResizeTextarea from 'react-textarea-autosize';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { InMessage } from '@/models/message/in_message';
 import convertDateToString from '@/utils/convert_date_to_string';
@@ -46,6 +46,7 @@ const MessageItem = function ({
 }: Props) {
   const [reply, setReply] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const toast = useToast();
 
   const messageBoxColor = useColorModeValue('white', '#393649');
@@ -95,13 +96,19 @@ const MessageItem = function ({
     }
   }
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const haveReply = item.reply !== undefined;
   const isDeny = item.deny !== undefined ? item.deny === true : false;
 
   function autoLink(message: string) {
     const Rexp =
       /(\b(https?|ftp|file):\/\/([-A-Z0-9+&@#%?=~_|!:,.;]*)([-A-Z0-9+&@#%?/=~_|!:,.;]*)[-A-Z0-9+&@#/%=~_|])/gi;
-    return message.replace(Rexp, "<div><a href='$1' target='_blank'>📎 $1</a></div>");
+
+    const replacedMessage = message.replace(Rexp, "<div><a href='$1' target='_blank'>📎 $1</a></div>");
+    return replacedMessage;
   }
 
   return (
@@ -165,7 +172,13 @@ const MessageItem = function ({
         </Box>
         <Box p="2">
           <Box borderRadius="md" borderWidth="1px" p="2">
-            <Text whiteSpace="pre-line" fontSize="sm" dangerouslySetInnerHTML={{ __html: autoLink(item.message) }} />
+            {isMounted ? (
+              <Text whiteSpace="pre-line" fontSize="sm" dangerouslySetInnerHTML={{ __html: autoLink(item.message) }} />
+            ) : (
+              <Text whiteSpace="pre-line" fontSize="sm">
+                {item.message}
+              </Text>
+            )}
           </Box>
           {haveReply && (
             <Box pt="2">
